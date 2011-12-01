@@ -1,0 +1,24 @@
+GitStrap = GitStats + Twitter BootStrap
+
+GitStrap is a fork of Gitstats tuned to leverage the fancyness of the Twitter Bootstrap toolkit.
+
+Please refer to the original projects for merits, I just stiched them together one sleepless night.
+
+
+= GitStats - git history statistics generator
+
+<http://gitstats.sourceforge.net/>
+
+About:
+
+GitStats is a statistics generator for git (a distributed revision control system) repositories.
+It examines the repository and produces some interesting statistics from the history of it.
+Currently HTML is the only output format.
+
+= Bootstrap, from Twitter
+
+<http://twitter.github.com/bootstrap/>
+
+Bootstrap is a toolkit from Twitter designed to kickstart development of webapps and sites.
+It includes base CSS and HTML for typography, forms, buttons, tables, grids, navigation, and more.
+Nerd alert: Bootstrap is built with Less and was designed to work out of the gate with modern browsers in mind.

@@ -14,7 +14,7 @@ import sys
 import time
 import zlib
 
-GNUPLOT_COMMON = 'set terminal png transparent size 640,240\nset size 1.0,1.0\n'
+GNUPLOT_COMMON = 'set terminal png transparent enhanced font "Vera,10" size 640,240\nset size 1.0,1.0\n'
 ON_LINUX = (platform.system() == 'Linux')
 WEEKDAYS = ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')
 
@@ -656,7 +656,7 @@ def html_linkify(text):
 
 def html_header(level, text):
 	name = html_linkify(text)
-	return '\n<h%d><a href="#%s" name="%s">%s</a></h%d>\n\n' % (level, name, name, text, level)
+	return '\n<a name="%s">&nbsp;</a></br></br><br/><h%d><a href="#%s">%s</a></h%d>\n\n' % (name, level, name, text, level)
 
 class HTMLReportCreator(ReportCreator):
 	def create(self, data, path):
@@ -696,7 +696,7 @@ class HTMLReportCreator(ReportCreator):
 		f.write('<dt>Authors</dt><dd>%s (average %.1f commits per author)</dd>' % (data.getTotalAuthors(), (1.0 * data.getTotalCommits()) / data.getTotalAuthors()))
 		f.write('</dl>')
 
-		f.write('</body>\n</html>')
+		f.write('</div></body>\n</html>')
 		f.close()
 
 		###
@@ -704,7 +704,7 @@ class HTMLReportCreator(ReportCreator):
 		f = open(path + '/activity.html', 'w')
 		self.printHeader(f)
 		f.write('<h1>Activity</h1>')
-		self.printNav(f)
+		self.printNav(f, 'activity')
 
 		#f.write('<h2>Last 30 days</h2>')
 
@@ -877,7 +877,7 @@ class HTMLReportCreator(ReportCreator):
 			f.write('<tr><th>%s</th><td style="background-color: rgb(%d, 0, 0)">%d</td></tr>' % (i, r, commits))
 		f.write('</tr></table>')
 
-		f.write('</body></html>')
+		f.write('</div></body></html>')
 		f.close()
 
 		###
@@ -886,7 +886,7 @@ class HTMLReportCreator(ReportCreator):
 		self.printHeader(f)
 
 		f.write('<h1>Authors</h1>')
-		self.printNav(f)
+		self.printNav(f,'authors')
 
 		# Authors :: List of authors
 		f.write(html_header(2, 'List of Authors'))
@@ -990,7 +990,7 @@ class HTMLReportCreator(ReportCreator):
 		f.write('<img src="domains.png" alt="Commits by Domains" />')
 		fp.close()
 
-		f.write('</body></html>')
+		f.write('</div></body></html>')
 		f.close()
 
 		###
@@ -998,7 +998,7 @@ class HTMLReportCreator(ReportCreator):
 		f = open(path + '/files.html', 'w')
 		self.printHeader(f)
 		f.write('<h1>Files</h1>')
-		self.printNav(f)
+		self.printNav(f, 'files')
 
 		f.write('<dl>\n')
 		f.write('<dt>Total files</dt><dd>%d</dd>' % data.getTotalFiles())
@@ -1020,7 +1020,7 @@ class HTMLReportCreator(ReportCreator):
 		#for stamp in sorted(data.files_by_stamp.keys()):
 		#	fg.write('%s %d\n' % (datetime.datetime.fromtimestamp(stamp).strftime('%Y-%m-%d'), data.files_by_stamp[stamp]))
 		fg.close()
-			
+
 		f.write('<img src="files_by_date.png" alt="Files by Date" />')
 
 		#f.write('<h2>Average file size by date</h2>')
@@ -1034,7 +1034,7 @@ class HTMLReportCreator(ReportCreator):
 			f.write('<tr><td>%s</td><td>%d (%.2f%%)</td><td>%d (%.2f%%)</td><td>%d</td></tr>' % (ext, files, (100.0 * files) / data.getTotalFiles(), lines, (100.0 * lines) / data.getTotalLOC(), lines / files))
 		f.write('</table>')
 
-		f.write('</body></html>')
+		f.write('</div></body></html>')
 		f.close()
 
 		###
@@ -1042,7 +1042,7 @@ class HTMLReportCreator(ReportCreator):
 		f = open(path + '/lines.html', 'w')
 		self.printHeader(f)
 		f.write('<h1>Lines</h1>')
-		self.printNav(f)
+		self.printNav(f, 'lines')
 
 		f.write('<dl>\n')
 		f.write('<dt>Total lines</dt><dd>%d</dd>' % data.getTotalLOC())
@@ -1056,7 +1056,7 @@ class HTMLReportCreator(ReportCreator):
 			fg.write('%d %d\n' % (stamp, data.changes_by_date[stamp]['lines']))
 		fg.close()
 
-		f.write('</body></html>')
+		f.write('</div></body></html>')
 		f.close()
 
 		###
@@ -1064,7 +1064,7 @@ class HTMLReportCreator(ReportCreator):
 		f = open(path + '/tags.html', 'w')
 		self.printHeader(f)
 		f.write('<h1>Tags</h1>')
-		self.printNav(f)
+		self.printNav(f,'tags')
 
 		f.write('<dl>')
 		f.write('<dt>Total tags</dt><dd>%d</dd>' % len(data.tags))
@@ -1073,6 +1073,7 @@ class HTMLReportCreator(ReportCreator):
 		f.write('</dl>')
 
 		f.write('<table class="tags">')
+		f.write('<colgroup><col><col style="width:6em"><col><col></colgroup>')
 		f.write('<tr><th>Name</th><th>Date</th><th>Commits</th><th>Authors</th></tr>')
 		# sort the tags by date desc
 		tags_sorted_by_date_desc = map(lambda el : el[1], reversed(sorted(map(lambda el : (el[1]['date'], el[0]), data.tags.items()))))
@@ -1081,10 +1082,10 @@ class HTMLReportCreator(ReportCreator):
 			self.authors_by_commits = getkeyssortedbyvalues(data.tags[tag]['authors'])
 			for i in reversed(self.authors_by_commits):
 				authorinfo.append('%s (%d)' % (i, data.tags[tag]['authors'][i]))
-			f.write('<tr><td>%s</td><td>%s</td><td>%d</td><td>%s</td></tr>' % (tag, data.tags[tag]['date'], data.tags[tag]['commits'], ', '.join(authorinfo)))
+			f.write('<tr><td><em>%s</em></td><td>%s</td><td>%d</td><td>%s</td></tr>' % (tag, data.tags[tag]['date'], data.tags[tag]['commits'], ', '.join(authorinfo)))
 		f.write('</table>')
 
-		f.write('</body></html>')
+		f.write('</div></body></html>')
 		f.close()
 
 		self.createGraphs(path)
@@ -1227,7 +1228,7 @@ plot 'lines_of_code.dat' using 1:2 w lines
 		f.write(GNUPLOT_COMMON)
 		f.write(
 """
-set terminal png transparent size 640,480
+set terminal png transparent enhanced font "Vera,10" size 640,480
 set output 'lines_of_code_by_author.png'
 set key left top
 set xdata time
@@ -1254,7 +1255,7 @@ plot """
 		f.write(GNUPLOT_COMMON)
 		f.write(
 """
-set terminal png transparent size 640,480
+set terminal png transparent enhanced font "Vera,10" size 640,480
 set output 'commits_by_author.png'
 set key left top
 set xdata time
@@ -1290,27 +1291,25 @@ plot """
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>GitStats - %s</title>
+	<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
 	<link rel="stylesheet" href="%s" type="text/css" />
 	<meta name="generator" content="GitStats %s" />
 	<script type="text/javascript" src="sortable.js"></script>
 </head>
 <body>
-""" % (self.title, conf['style'], getversion()))
+<div class="container">
+""" % (self.title, conf['style'], getversion() ) )
 
-	def printNav(self, f):
-		f.write("""
-<div class="nav">
-<ul>
-<li><a href="index.html">General</a></li>
-<li><a href="activity.html">Activity</a></li>
-<li><a href="authors.html">Authors</a></li>
-<li><a href="files.html">Files</a></li>
-<li><a href="lines.html">Lines</a></li>
-<li><a href="tags.html">Tags</a></li>
-</ul>
-</div>
-""")
-		
+	def printNav(self, f, section=''):
+		f.write("""<div class="topbar" data-scrollspy="scrollspy"><div class="topbar-inner">
+<a class="brand" href="#">GitStats - %s</a><div class="container">
+""" % (self.title))
+		f.write('<div class="nav"><ul>')
+		f.write( '<li%s><a href="index.html">General</a></li>' % ('' if section else ' class="active"'))
+		for tab in ['activity','authors','files','lines','tags']:
+			f.write( '<li%s><a href="%s.html">%s</a></li>' % (' class="active"' if section == tab else '', tab, tab.capitalize() ))
+		f.write("</ul></div></div></div></div>")
+
 
 class GitStats:
 	def run(self, args_orig):

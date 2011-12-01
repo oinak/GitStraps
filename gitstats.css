@@ -3,7 +3,13 @@
  */
 body {
 	color: black;
-	background-color: #dfd;
+	background-color: #fff;
+  padding: 50px 5% auto 5%;
+  padding-top: 50px;
+}
+
+div.container{
+  /*margin-top: 50px;*/
 }
 
 dt {
@@ -22,7 +28,7 @@ dd {
 }
 
 table {
-	border: 1px solid black;
+	/*border: 1px solid black;*/
 	border-collapse: collapse;
 	font-size: 80%;
 	margin-bottom: 1em;
@@ -62,13 +68,19 @@ tr:hover {
 }
 
 td {
-	border: 1px solid black;
+	/*border: 1px solid black;*/
 	padding: 0.2em;
 	padding-left: 0.3em;
 	padding-right: 0.2em;
 }
 
+table th, table td {
+padding: 5px 5px 4px;
+}
+
+
 /* Navigation bar; tabbed style */
+/*
 .nav {
 	border-bottom: 1px solid black;
 	padding: 0.3em;
@@ -110,6 +122,12 @@ th img {
 	padding: 0px;
 	background-color: #ddf;
 }
+*/
+
+a:hover {
+  color: #000;
+  text-decoration: none;
+}
 
 h1 a, h2 a {
 	color: black;
@@ -118,14 +136,14 @@ h1 a, h2 a {
 
 h1:hover a:after,
 h2:hover a:after {
-	content: '¶';
-	color: #555;
+	/*content: '¶';*/
+	/*color: #555;*/
 }
 
 h1 {
 	font-size: x-large;
 }
-
+/*
 h2 {
 	background-color: #564;
 	border: 1px solid black;
@@ -143,3 +161,4 @@ h2 a {
 .moreauthors {
 	font-size: 80%;
 }
+*/
